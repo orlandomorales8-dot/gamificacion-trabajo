@@ -1,0 +1,6 @@
+{
+  "name": "Blog de Gamificación",
+  "description": "Publicación digital profesional y minimalista sobre teoría de la gamificación, dinámicas MDA, mecánicas PBL, historia y análisis de casos reales.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
