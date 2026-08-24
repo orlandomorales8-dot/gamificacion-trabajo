@@ -188,115 +188,122 @@ export default function App() {
   const bookmarkedArticles = ARTICLES.filter((a) => stats.bookmarkedIds.includes(a.id));
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] text-stone-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#080a0f] text-slate-100 flex flex-col font-sans relative overflow-x-hidden selection:bg-[#ccff00] selection:text-black">
       
-      {/* 1. Sticky Navigation Bar */}
-      <Navbar
-        stats={stats}
-        onOpenBookmarks={() => setIsBookmarksOpen(true)}
-        onOpenSearch={() => setIsSearchModalOpen(true)}
-        onSelectCategory={(cat) => {
-          setSelectedCategory(cat);
-          setSearchQuery('');
-        }}
-        activeCategory={selectedCategory}
-      />
+      {/* Background Ambient Acid Glows & Cyber Grid */}
+      <div className="fixed inset-0 bg-cyber-grid opacity-35 pointer-events-none z-0" />
+      <div className="fixed -top-40 left-1/4 w-96 h-96 bg-[#ccff00]/10 rounded-full blur-[120px] pointer-events-none z-0" />
+      <div className="fixed top-1/2 -right-20 w-96 h-96 bg-[#00f0ff]/10 rounded-full blur-[130px] pointer-events-none z-0" />
+      <div className="fixed -bottom-20 left-10 w-96 h-96 bg-[#bf5af2]/10 rounded-full blur-[140px] pointer-events-none z-0" />
+      
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* 1. Sticky Navigation Bar */}
+        <Navbar
+          stats={stats}
+          onOpenBookmarks={() => setIsBookmarksOpen(true)}
+          onOpenSearch={() => setIsSearchModalOpen(true)}
+          onSelectCategory={(cat) => {
+            setSelectedCategory(cat);
+            setSearchQuery('');
+          }}
+          activeCategory={selectedCategory}
+        />
 
-      {/* 2. Hero Section */}
-      <HeroSection
-        onExplore={() => {
-          const el = document.getElementById('articulos');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}
-        onSelectCategory={(cat) => {
-          setSelectedCategory(cat);
-          const el = document.getElementById('articulos');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}
-      />
+        {/* 2. Hero Section */}
+        <HeroSection
+          onExplore={() => {
+            const el = document.getElementById('articulos');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+          onSelectCategory={(cat) => {
+            setSelectedCategory(cat);
+            const el = document.getElementById('articulos');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
 
-      {/* 3. Main Content Container: Grid (left) + Sidebar (right) */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
-          
-          {/* Main Grid: 8 Cols on Large Screens */}
-          <div className="lg:col-span-8 space-y-8">
-            <ArticleGrid
-              articles={ARTICLES}
-              bookmarkedIds={stats.bookmarkedIds}
-              readArticleIds={stats.readArticleIds}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              onSelectArticle={handleOpenArticle}
-              onToggleBookmark={handleToggleBookmark}
-            />
-          </div>
-
-          {/* Interactive Sidebar: 4 Cols on Large Screens */}
-          <div className="lg:col-span-4">
-            <div className="sticky top-24">
-              <Sidebar
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
+        {/* 3. Main Content Container: Grid (left) + Sidebar (right) */}
+        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+            
+            {/* Main Grid: 8 Cols on Large Screens */}
+            <div className="lg:col-span-8 space-y-8">
+              <ArticleGrid
+                articles={ARTICLES}
+                bookmarkedIds={stats.bookmarkedIds}
+                readArticleIds={stats.readArticleIds}
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}
-                articles={ARTICLES}
-                stats={stats}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
                 onSelectArticle={handleOpenArticle}
+                onToggleBookmark={handleToggleBookmark}
               />
             </div>
+
+            {/* Interactive Sidebar: 4 Cols on Large Screens */}
+            <div className="lg:col-span-4">
+              <div className="sticky top-24">
+                <Sidebar
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={setSelectedCategory}
+                  articles={ARTICLES}
+                  stats={stats}
+                  onSelectArticle={handleOpenArticle}
+                />
+              </div>
+            </div>
+
           </div>
+        </main>
 
-        </div>
-      </main>
+        {/* 4. Reading Modal / Overlay Reader */}
+        <ArticleModal
+          article={selectedArticle}
+          allArticles={ARTICLES}
+          isBookmarked={selectedArticle ? stats.bookmarkedIds.includes(selectedArticle.id) : false}
+          isRead={selectedArticle ? stats.readArticleIds.includes(selectedArticle.id) : false}
+          onClose={handleCloseArticle}
+          onToggleBookmark={(id) => handleToggleBookmark(id)}
+          onMarkAsRead={handleMarkAsRead}
+          onNavigateToArticle={handleOpenArticle}
+        />
 
-      {/* 4. Reading Modal / Overlay Reader */}
-      <ArticleModal
-        article={selectedArticle}
-        allArticles={ARTICLES}
-        isBookmarked={selectedArticle ? stats.bookmarkedIds.includes(selectedArticle.id) : false}
-        isRead={selectedArticle ? stats.readArticleIds.includes(selectedArticle.id) : false}
-        onClose={handleCloseArticle}
-        onToggleBookmark={(id) => handleToggleBookmark(id)}
-        onMarkAsRead={handleMarkAsRead}
-        onNavigateToArticle={handleOpenArticle}
-      />
+        {/* 5. Bookmarks Slide-over Drawer */}
+        <BookmarksDrawer
+          isOpen={isBookmarksOpen}
+          onClose={() => setIsBookmarksOpen(false)}
+          bookmarkedArticles={bookmarkedArticles}
+          onSelectArticle={handleOpenArticle}
+          onRemoveBookmark={handleRemoveBookmark}
+          onClearAll={handleClearAllBookmarks}
+        />
 
-      {/* 5. Bookmarks Slide-over Drawer */}
-      <BookmarksDrawer
-        isOpen={isBookmarksOpen}
-        onClose={() => setIsBookmarksOpen(false)}
-        bookmarkedArticles={bookmarkedArticles}
-        onSelectArticle={handleOpenArticle}
-        onRemoveBookmark={handleRemoveBookmark}
-        onClearAll={handleClearAllBookmarks}
-      />
+        {/* 6. Quick Search Dialog / Command Palette */}
+        <SearchModal
+          isOpen={isSearchModalOpen}
+          onClose={() => setIsSearchModalOpen(false)}
+          articles={ARTICLES}
+          onSelectArticle={handleOpenArticle}
+        />
 
-      {/* 6. Quick Search Dialog / Command Palette */}
-      <SearchModal
-        isOpen={isSearchModalOpen}
-        onClose={() => setIsSearchModalOpen(false)}
-        articles={ARTICLES}
-        onSelectArticle={handleOpenArticle}
-      />
+        {/* 7. Badge Unlock Toast Celebration */}
+        <BadgeCelebration
+          badge={unlockedBadgeToast}
+          onClose={() => setUnlockedBadgeToast(null)}
+        />
 
-      {/* 7. Badge Unlock Toast Celebration */}
-      <BadgeCelebration
-        badge={unlockedBadgeToast}
-        onClose={() => setUnlockedBadgeToast(null)}
-      />
-
-      {/* 8. Footer */}
-      <Footer
-        onSelectCategory={setSelectedCategory}
-        onOpenArticleBySlug={(slug) => {
-          const art = ARTICLES.find((a) => a.slug === slug);
-          if (art) handleOpenArticle(art);
-        }}
-      />
-
+        {/* 8. Footer */}
+        <Footer
+          onSelectCategory={setSelectedCategory}
+          onOpenArticleBySlug={(slug) => {
+            const art = ARTICLES.find((a) => a.slug === slug);
+            if (art) handleOpenArticle(art);
+          }}
+        />
+      </div>
     </div>
   );
 }

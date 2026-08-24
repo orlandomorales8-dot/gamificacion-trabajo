@@ -37,7 +37,9 @@ export interface Article {
   readTimeMinutes: number;
   date: string;
   author: Author;
+  coverImage: string;
   coverAccent: string;
+  acidColor: 'lime' | 'cyan' | 'purple' | 'amber' | 'rose' | 'emerald';
   iconName: string;
   xpReward: number;
   featured?: boolean;
