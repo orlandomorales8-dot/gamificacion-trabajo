@@ -16,9 +16,11 @@ import {
   Brain, 
   ArrowLeft,
   Zap,
-  Tag
+  Tag,
+  Code2
 } from 'lucide-react';
 import { Article } from '../types';
+import { HtmlExporterModal } from './HtmlExporterModal';
 
 interface ArticleModalProps {
   article: Article | null;
@@ -42,6 +44,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   onNavigateToArticle,
 }) => {
   const [copied, setCopied] = useState(false);
+  const [isExporterOpen, setIsExporterOpen] = useState(false);
   const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md');
   const [selectedQuizOption, setSelectedQuizOption] = useState<number | null>(null);
   const [quizSubmitted, setQuizSubmitted] = useState(false);
@@ -219,10 +222,20 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               </button>
             </div>
 
+            {/* Export HTML / CSS button */}
+            <button
+              onClick={() => setIsExporterOpen(true)}
+              className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-[#ccff00] hover:border-[#ccff00]/60 hover:bg-slate-850 text-xs font-mono flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(204,255,0,0.15)] cursor-pointer"
+              title="Exportar entrada en HTML y CSS limpio"
+            >
+              <Code2 className="w-4 h-4 text-[#ccff00]" />
+              <span className="hidden lg:inline">Código HTML/CSS</span>
+            </button>
+
             {/* Bookmark button */}
             <button
               onClick={() => onToggleBookmark(article.id)}
-              className={`p-2 rounded-xl border transition-colors text-xs font-mono flex items-center gap-1.5 ${
+              className={`p-2 rounded-xl border transition-colors text-xs font-mono flex items-center gap-1.5 cursor-pointer ${
                 isBookmarked 
                   ? 'bg-slate-900 text-[#ccff00] border-[#ccff00]/60 shadow-[0_0_10px_rgba(204,255,0,0.2)]' 
                   : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'
@@ -547,6 +560,13 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         </article>
 
       </div>
+
+      {/* HTML Exporter Modal */}
+      <HtmlExporterModal
+        article={article}
+        isOpen={isExporterOpen}
+        onClose={() => setIsExporterOpen(false)}
+      />
     </div>
   );
 };
